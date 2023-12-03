@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<?php
+
+/**
+ * @var \Modules\ExchangeRate\Block\ExchangeRateBlock $block
+ */
+?>
+
+<?php
+$json = file_get_contents("https://v6.exchangerate-api.com/v6/9f6a951a9ca74b234161f24f/latest/VND");
+$data = json_decode($json, true);
+
+?>
+<h3 class="text-center">Bảng quy đổi tiền tệ sang <?= $data['base_code'] ?></h3>
+<p> Cập nhật lần cuối <?= $data['time_last_update_utc'] ?> </p>
+<p> Cập nhật tiếp theo <?= $data['time_next_update_utc'] ?> </p>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col"><h3>STT</h3></th>
+
+        <th scope="col"><h3>Mã</h3></th>
+        <th scope="col"><h3>Quy đổi</h3></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <?php
+    $index = 1; // Khởi tạo biến số thứ tự
+    foreach ($data['conversion_rates'] as $currencyCode => $currency):
+        ?>
+        <tr>
+            <td> <?= $index++ ?> </td> <!-- Sử dụng biến số thứ tự và tăng giá trị sau mỗi lần lặp -->
+
+            <td><img width="27px" height="18px"
+                     src="https://wise.com/public-resources/assets/flags/rectangle/<?= strtolower($currencyCode) ?>.png">
+                <?= $currencyCode ?> </td>
+            <td> <?= rtrim(number_format((1/$currency), 4, ',', ''), '0') ?> </td>
+        </tr>
+    <?php endforeach; ?>
+
+    </tbody>
+</table>
