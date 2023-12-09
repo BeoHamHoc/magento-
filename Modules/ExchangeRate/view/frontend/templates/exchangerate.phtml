@@ -1,0 +1,66 @@
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"-->
+<!--      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+<?php
+
+/**
+ * @var \Modules\ExchangeRate\Block\ExchangeRateBlock $block
+ */
+?>
+
+<?php
+$url = "https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx";
+
+$arrContextOptions=array(
+    "ssl"=>array(
+        "verify_peer"=>false,
+        "verify_peer_name"=>false,
+    ),
+);
+$content = file_get_contents($url, false, stream_context_create($arrContextOptions));
+$data = simplexml_load_string($content);
+
+
+?>
+<p>Cập nhật lúc: <?php echo $data->DateTime ?></p>
+<table >
+    <tbody>
+    <tr>
+        <td style="width: 281px; text-align: center; background-color: #a1c038; color: white;"><h3>Mã ngoại tệ</h3></td>
+        <td style="width: 281px; text-align: center; background-color: #a1c038; color: white;"><h3>Tên ngoại tệ</h3></td>
+        <td style="width: 281px; text-align: center; background-color: #a1c038; color: white;"><h3>Tiền mặt</h3></td>
+        <td style="width: 280px; text-align: center; background-color: #a1c038; color: white;"><h3>Chuyển khoản</h3></td>
+        <td style="width: 280px; text-align: center; background-color: #a1c038; color: white;"><h3>Bán</h3></td>
+    </tr>
+    <?php
+    foreach($data->Exrate as $Exrates) {
+        ?>
+        <tr>
+            <td style="width: 281px;"><span><img width="27px" height="18px" src="https://wise.com/public-resources/assets/flags/rectangle/<?= strtolower($Exrates['CurrencyCode']) ?>.png">  </span><?php echo $Exrates['CurrencyCode'] ?></td>
+            <td style="width: 281px;"><?php echo $Exrates['CurrencyName'] ?></td>
+            <td style="width: 281px;"><?php echo $Exrates['Buy'] ?></td>
+            <td style="width: 280px;"><?php echo $Exrates['Transfer'] ?></td>
+            <td style="width: 280px;"><?php echo $Exrates['Sell'] ?></td>
+        </tr>
+        <?php
+    }
+    ?>
+    </tbody>
+</table>
+<style>
+    body {
+        font-family: 'Noto Sans JP', sans-serif;
+        background-color: #FFFFFFFF;
+    }
+    table {
+        border-collapse: collapse;
+        border-radius: 1em;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 1em;
+        border-left: 2px solid #ddd ;
+        border-right:2px solid #ddd;
+    }
+    tr:nth-child(odd) {background-color: #f2f2f2;}
+</style>
